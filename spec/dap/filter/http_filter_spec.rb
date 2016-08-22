@@ -35,7 +35,8 @@ describe Dap::Filter::FilterDecodeHTTPReply do
 
     context 'decoding gzip compressed response' do
       let(:body) {
-        io = StringIO.new('w')
+        io = StringIO.new
+        io.set_encoding('ASCII-8BIT')
         gz = Zlib::GzipWriter.new(io)
         gz.write('stuff')
         gz.close
