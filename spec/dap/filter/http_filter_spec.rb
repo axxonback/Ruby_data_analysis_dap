@@ -33,10 +33,17 @@ describe Dap::Filter::FilterDecodeHTTPReply do
       end
     end
 
-    context 'decoding compressed response' do
-      let(:decode) { filter.decode("HTTP/1.0 200 OK\r\nContent-encoding: gzip\r\n\r\n#{Zlib::Deflate.deflate('stuff')}") }
+    context 'decoding gzip compressed response' do
+      let(:body) {
+        io = StringIO.new('w')
+        gz = Zlib::GzipWriter.new(io)
+        gz.write('stuff')
+        gz.close
+        io.string
+      }
+      let(:decode) { filter.decode("HTTP/1.0 200 OK\r\nContent-encoding: gzip\r\n\r\n#{body}") }
 
-      it 'correctly sets body' do
+      it 'correctly decompresses body' do
         expect(decode['http_body']).to eq('stuff')
       end
     end

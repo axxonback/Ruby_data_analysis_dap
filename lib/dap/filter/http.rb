@@ -198,7 +198,8 @@ class FilterDecodeHTTPReply
         gunzip = Zlib::GzipReader.new(StringIO.new(body))
         body = gunzip.read.encode('UTF-8', :invalid=>:replace, :replace=>'?')
         gunzip.close()
-      rescue
+      rescue Exception => e
+        puts e
       end
     end
     save["http_body"] = body
